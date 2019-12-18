@@ -1,0 +1,14 @@
+bin/
+log/
+target/
+datasources/
+lib/
+
+# eclipse
+.settings/
+.classpath
+.project
+
+# intellij idea
+.idea
+/*.iml
