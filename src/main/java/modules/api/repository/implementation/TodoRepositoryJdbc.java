@@ -1,22 +1,21 @@
 package modules.api.repository.implementation;
 
 import domain.TodoItem;
-import java.util.Collections;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import modules.api.repository.TodoRepository;
+import modules.api.repository.dto.TodoItemDto;
 import modules.api.repository.mapper.TodoItemMapper;
-import modules.api.repository.models.DeactivateTodoResponse;
-import modules.api.repository.models.SaveTodoResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
@@ -25,51 +24,43 @@ public class TodoRepositoryJdbc implements TodoRepository {
   private final NamedParameterJdbcTemplate jdbcTemplate;
 
   @Override
-  public ResponseEntity<SaveTodoResponse> saveTodoItem(String todoText, List<String> categories) {
+  public Optional<Integer> saveTodoItem(TodoItemDto todoItemDto) {
     try {
       String query = "INSERT INTO todo_item (text) VALUES (:todoText)";
 
       KeyHolder holder = new GeneratedKeyHolder();
-      SqlParameterSource param = new MapSqlParameterSource().addValue("todoText", todoText);
+      SqlParameterSource param = new MapSqlParameterSource().addValue("todoText", todoItemDto.getTodoText());
       jdbcTemplate.update(query, param, holder);
-
-      return new ResponseEntity(new SaveTodoResponse(holder.getKey(), ""), HttpStatus.OK);
+      return Optional.of(holder.getKey().intValue());
     } catch (Exception e) {
       log.error(e.getMessage(), e);
-      return new ResponseEntity(
-          new SaveTodoResponse(-1, "Error while saving todo item"),
-          HttpStatus.INTERNAL_SERVER_ERROR);
+      return Optional.empty();
     }
   }
 
   @Override
-  public ResponseEntity<DeactivateTodoResponse> deactivateTodoItem(Integer todoItemId) {
+  public Boolean deactivateTodoItem(Integer todoItemId) {
     try {
       String query = "UPDATE todo_item SET active = 0 WHERE id =:todoItemId";
 
       SqlParameterSource param = new MapSqlParameterSource().addValue("todoItemId", todoItemId);
-      jdbcTemplate.update(query, param);
-
-      return new ResponseEntity(new DeactivateTodoResponse(""), HttpStatus.OK);
+      return jdbcTemplate.update(query, param) > 0;
     } catch (Exception e) {
       log.error(e.getMessage(), e);
-      return new ResponseEntity(
-          new DeactivateTodoResponse("Error while deactivating todo item"),
-          HttpStatus.INTERNAL_SERVER_ERROR);
+      return false;
     }
   }
 
   @Override
-  public ResponseEntity<List<TodoItem>> getTodoItemsByCategory(String category) {
+  public List<TodoItem> getTodoItems() {
     try {
       String query = "SELECT id, text, createdat, active FROM todo_item";
 
-      List<TodoItem> todoItemList = jdbcTemplate.query(query, new TodoItemMapper());
+      return jdbcTemplate.query(query, new TodoItemMapper());
 
-      return new ResponseEntity(todoItemList, HttpStatus.OK);
     } catch (Exception e) {
       log.error(e.getMessage(), e);
-      return new ResponseEntity(Collections.emptyList(), HttpStatus.INTERNAL_SERVER_ERROR);
+      return Collections.emptyList();
     }
   }
 }

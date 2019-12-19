@@ -2,8 +2,14 @@ package modules.api;
 
 import domain.TodoItem;
 import java.util.List;
+
+import modules.api.repository.dto.TodoItemDto;
+import modules.api.repository.models.DeactivateTodoResponse;
+import modules.api.repository.models.SaveTodoResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 public interface TodoApiService {
 
@@ -11,8 +17,8 @@ public interface TodoApiService {
   ResponseEntity<List<TodoItem>> getTodoItems();
 
   @GetMapping("/deactivateItem")
-  ResponseEntity<Boolean> deactivateItem(Integer itemId);
+  ResponseEntity<DeactivateTodoResponse> deactivateItem(Integer itemId);
 
-  @GetMapping("/deactivateItem")
-  ResponseEntity<Boolean> saveItem(String todoText, List<String> categories);
+  @PostMapping("/saveItem")
+  ResponseEntity<SaveTodoResponse> saveItem(@RequestBody TodoItemDto todoItemDto);
 }

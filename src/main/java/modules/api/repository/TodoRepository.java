@@ -2,14 +2,17 @@ package modules.api.repository;
 
 import domain.TodoItem;
 import java.util.List;
+import java.util.Optional;
+
+import modules.api.repository.dto.TodoItemDto;
 import modules.api.repository.models.DeactivateTodoResponse;
 import modules.api.repository.models.SaveTodoResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface TodoRepository {
-  ResponseEntity<SaveTodoResponse> saveTodoItem(String todoText, List<String> categories);
+  Optional<Integer> saveTodoItem(TodoItemDto todoItemDto);
 
-  ResponseEntity<DeactivateTodoResponse> deactivateTodoItem(Integer todoItemId);
+  Boolean deactivateTodoItem(Integer todoItemId);
 
-  ResponseEntity<List<TodoItem>> getTodoItemsByCategory(String category);
+  List<TodoItem> getTodoItems();
 }
