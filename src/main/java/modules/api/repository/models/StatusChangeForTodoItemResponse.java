@@ -5,7 +5,7 @@ import lombok.Value;
 
 @Value
 @RequiredArgsConstructor
-public class DeactivateTodoResponse {
+public class StatusChangeForTodoItemResponse {
   private final Boolean result;
   private final String responseMessage;
 }

@@ -6,6 +6,5 @@ import lombok.Value;
 @Value
 @RequiredArgsConstructor
 public class SaveTodoResponse {
-  private final Number todoItemId;
   private final String responseMessage;
 }

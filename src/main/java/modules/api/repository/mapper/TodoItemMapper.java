@@ -13,6 +13,6 @@ public class TodoItemMapper implements RowMapper<TodoItem> {
         resultSet.getString("text"),
         null,
         resultSet.getDate("createdat").getTime(),
-        resultSet.getBoolean("isActive"));
+        resultSet.getBoolean("active"));
   }
 }

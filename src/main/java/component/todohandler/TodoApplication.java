@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 @Slf4j
 @Import({TodoHandlerConfiguration.class})
-public class TodoHandler {
+public class TodoApplication {
   @PostConstruct
   public void postConstruct() {
     TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
@@ -20,6 +20,6 @@ public class TodoHandler {
   }
 
   public static void main(String[] args) {
-    SpringApplication.run(TodoHandler.class, args);
+    SpringApplication.run(TodoApplication.class, args);
   }
 }
